@@ -1,0 +1,45 @@
+# Self-host: backend (serves the bundled frontend) + Postgres, one command.
+#   docker compose up --build -d
+# Then expose it to testers with a Cloudflare Tunnel (see SELF-HOST.md).
+# Secrets come from a local .env file (gitignored) — see .env.example.
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-aischeduler}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-aischeduler}"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    restart: unless-stopped
+
+  app:
+    build: .
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      SERVER_PORT: 8081
+      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB:-aischeduler}
+      DB_USERNAME: ${POSTGRES_USER:-postgres}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+      LLM_API_KEY: ${LLM_API_KEY:-}
+      LLM_API_URL: ${LLM_API_URL:-https://api.groq.com/openai/v1/chat/completions}
+      LLM_MODEL: ${LLM_MODEL:-llama-3.3-70b-versatile}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      # Same public HTTPS origin serves API + frontend + OAuth callback.
+      FRONTEND_ORIGIN: ${PUBLIC_URL:-http://localhost:8081}
+      GOOGLE_REDIRECT_URI: ${PUBLIC_URL:-http://localhost:8081}/api/auth/oauth/google/callback
+    ports:
+      - "8081:8081"
+    restart: unless-stopped
+
+volumes:
+  pgdata:
