@@ -9,6 +9,7 @@ import { initReminders, toggleReminders } from './reminders.js';
 import { closeImportModal, closeModal, confirmUnifiedImport, courseApiUrl, courseToCalendarEvent, initCalendar, loadTasks, loadTimezones, onTimezoneChange, openEditModal, openImportModal, previewUnifiedImport, saveManualTask, taskApiUrl, taskToCalendarEvent, updateTaskColor } from './scheduler.js';
 import { applyServerPreferences, closeSettingsModal, openSettingsModal, saveSettings } from './settings.js';
 import { previewTheme, setTheme, toggleNightMode } from './theme.js';
+import { initTodayBand } from './todayBand.js';
 
 document.addEventListener('DOMContentLoaded', function () {
             consumeOAuthRedirect();
@@ -27,6 +28,7 @@ document.addEventListener('DOMContentLoaded', function () {
             renderAuthState();
             loadTimezones(initialTz);
             initCalendar(initialTz);
+            initTodayBand();
             applyLanguage();
             loadTasks(initialTz);
             loadLifestyleAnalysis('day', initialTz);

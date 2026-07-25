@@ -531,6 +531,202 @@
 
 
 
+        /* "Today" info band — a quiet framed sign-board above the calendar.
+           Two zones: buddy/greeting (motivation) on the left, the "up next"
+           agenda + status pills (execution) on the right. Kept muted so it
+           doesn't compete with the calendar; only the pills carry accent. */
+        #todayBand {
+            flex-shrink: 0;
+            display: flex;
+            gap: var(--space-4);
+            margin-bottom: var(--space-4);
+            padding: var(--space-3) var(--space-4);
+            background: var(--bg-surface);
+            border: 1px solid var(--border-light);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .tb-zone {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            gap: var(--space-1);
+            justify-content: center;
+        }
+
+        .tb-zone-buddy {
+            flex: 0 0 33%;
+            border-right: 1px solid var(--border-light);
+            padding-right: var(--space-4);
+        }
+
+        .tb-zone-agenda {
+            flex: 1;
+        }
+
+        .tb-buddy-row {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+        }
+
+        .tb-avatar {
+            width: 34px;
+            height: 34px;
+            flex-shrink: 0;
+            border-radius: var(--radius-sm);
+            image-rendering: pixelated;
+            background: var(--portrait-backdrop, transparent);
+        }
+
+        .tb-buddy-id {
+            display: flex;
+            align-items: baseline;
+            flex-wrap: wrap;
+            gap: 4px 8px;
+            min-width: 0;
+        }
+
+        .tb-buddy-name {
+            font-weight: 700;
+            font-size: var(--text-body);
+            color: var(--text-main);
+        }
+
+        .tb-lv {
+            font-size: var(--text-caption);
+            font-weight: 700;
+            color: var(--color-positive);
+        }
+
+        .tb-mood {
+            font-size: var(--text-caption);
+            color: var(--text-muted);
+        }
+
+        .tb-greeting {
+            margin: 0;
+            font-size: var(--text-caption);
+            color: var(--text-muted);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .tb-agenda-head {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            gap: var(--space-2);
+            flex-wrap: wrap;
+        }
+
+        .tb-agenda-title {
+            font-weight: 700;
+            font-size: var(--text-body);
+            color: var(--text-main);
+        }
+
+        .tb-stats {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 4px;
+        }
+
+        .tb-pill {
+            font-size: var(--text-caption);
+            font-weight: 600;
+            padding: 1px 8px;
+            border-radius: var(--radius-pill);
+            background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+            color: var(--color-primary-text);
+            white-space: nowrap;
+        }
+
+        .tb-pill-over {
+            background: color-mix(in srgb, var(--color-danger) 18%, transparent);
+            color: var(--color-danger);
+        }
+
+        .tb-pill-next {
+            background: color-mix(in srgb, var(--color-highlight) 20%, transparent);
+            color: var(--text-main);
+        }
+
+        .tb-agenda-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            margin-top: 2px;
+        }
+
+        .tb-task {
+            display: flex;
+            align-items: center;
+            gap: var(--space-2);
+            min-width: 0;
+            padding: 1px 0;
+            cursor: var(--cursor-clickable, pointer);
+        }
+
+        .tb-check {
+            flex-shrink: 0;
+            margin: 0;
+        }
+
+        .tb-task-time {
+            flex-shrink: 0;
+            width: 42px;
+            font-variant-numeric: tabular-nums;
+            font-size: var(--text-caption);
+            color: var(--text-muted);
+        }
+
+        .tb-task-title {
+            min-width: 0;
+            font-size: var(--text-caption);
+            color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tb-empty {
+            font-size: var(--text-caption);
+            color: var(--text-muted);
+            padding: 2px 0;
+        }
+
+        /* Stardew: swap the soft card for the wood-frame panel language. */
+        [data-theme^="stardew"] #todayBand {
+            border: none;
+            border-radius: var(--radius-xs);
+            box-shadow: var(--panel-frame);
+        }
+
+        [data-theme^="stardew"] .tb-pill {
+            border-radius: var(--radius-xs);
+        }
+
+        @media (max-width: 900px) {
+            #todayBand {
+                flex-direction: column;
+                gap: var(--space-2);
+            }
+
+            .tb-zone-buddy {
+                flex-basis: auto;
+                border-right: none;
+                border-bottom: 1px solid var(--border-light);
+                padding-right: 0;
+                padding-bottom: var(--space-2);
+            }
+        }
+
+
+
         .fc {
             font-family: inherit;
         }
@@ -1334,6 +1530,41 @@
             display: none;
         }
 
+        /* Actionable reminder bubbles (snooze / reschedule). */
+        .buddy-bubble-actions {
+            display: flex;
+            gap: var(--space-2);
+            margin-top: var(--space-2);
+        }
+
+        .buddy-bubble-btn {
+            border: none;
+            border-radius: var(--radius-sm);
+            padding: 3px 10px;
+            font-size: var(--text-caption);
+            font-weight: 600;
+            cursor: var(--cursor-clickable, pointer);
+            background: var(--color-primary);
+            color: #fff;
+        }
+
+        .buddy-bubble-btn.secondary {
+            background: transparent;
+            border: 1px solid var(--border-strong);
+            color: var(--text-main);
+        }
+
+        /* The global `[data-theme^="stardew"] button { color:#fff !important }`
+           rule would blank the ghost secondary button — pin the colors. */
+        [data-theme^="stardew"] .buddy-bubble-btn {
+            color: #fff !important;
+        }
+
+        [data-theme^="stardew"] .buddy-bubble-btn.secondary {
+            background: transparent !important;
+            color: var(--text-main) !important;
+        }
+
         @keyframes buddy-idle-blink {
             0%, 100% { transform: scaleY(1); }
             50% { transform: scaleY(0.1); }
@@ -1966,6 +2197,14 @@
             font-size: var(--text-caption);
             color: var(--text-muted);
             margin-top: 6px;
+        }
+
+        .reminders-hint {
+            font-size: var(--text-caption);
+            line-height: 1.5;
+            color: var(--text-muted);
+            margin: 6px 0 0;
+            opacity: 0.85;
         }
 
 

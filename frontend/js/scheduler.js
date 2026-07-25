@@ -354,6 +354,12 @@ export async function toggleTaskComplete(taskId, completed, itemEl) {
                     renderBuddyMoodBadge();
                     celebrateBuddyProgress(result.buddyState);
                 }
+                // Keep the cached task in sync so the Today band (and any other
+                // view reading state.lastLoadedTasks) reflects the new completed
+                // state without a full reload, then let them re-render.
+                const cached = (state.lastLoadedTasks || []).find(t => String(t.id) === String(taskId));
+                if (cached) cached.completed = completed;
+                document.dispatchEvent(new Event('nexus:today-refresh'));
             } catch (e) {
                 console.error('Failed to update task completion', e);
             }
@@ -366,6 +372,7 @@ export async function loadTasks(timezone) {
                 const response = await fetch(taskApiUrl(timezone));
                 const tasks = await response.json();
                 state.lastLoadedTasks = tasks;
+                document.dispatchEvent(new Event('nexus:today-refresh'));
 
                 if (!tasks.length) {
                     taskListEl.innerHTML = `<div class="empty-state-box"><div class="empty-state-icon">🎯</div><div style="font-size: 13px; font-weight: 500;">${escapeHtml(translations[lang].noTasks)}</div></div>`;

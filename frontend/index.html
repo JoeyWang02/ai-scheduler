@@ -162,6 +162,7 @@
                     <button class="btn-sync" id="remindersToggleBtn" onclick="toggleReminders()" data-i18n="remindersEnableBtn">开启截止提醒</button>
                 </div>
                 <div id="remindersStatus" class="reminders-status"></div>
+                <p class="reminders-hint" data-i18n="remindersCompanionHint"></p>
             </div>
 
             <div class="settings-section">
@@ -325,6 +326,10 @@
     </nav>
 
     <div id="calendar-container">
+        <section id="todayBand" aria-label="Today overview">
+            <div id="todayBandBuddy" class="tb-zone tb-zone-buddy"></div>
+            <div id="todayBandAgenda" class="tb-zone tb-zone-agenda"></div>
+        </section>
         <div id="calendar"></div>
     </div>
 

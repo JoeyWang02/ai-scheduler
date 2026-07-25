@@ -113,9 +113,39 @@ export function updateChatWindowPosition() {
     if (chatPopper) chatPopper.update();
 }
 
-export function showBuddyBubble(text, duration = 6000) {
+export function showBuddyBubble(text, opts = {}) {
     if (!bubbleEl) return;
-    bubbleEl.textContent = text;
+    // Back-compat: an older call passed a numeric duration as the 2nd arg.
+    const options = typeof opts === 'number' ? { duration: opts } : (opts || {});
+    const actions = options.actions || [];
+    // Actionable bubbles linger longer so there's time to click.
+    const duration = options.duration || (actions.length ? 15000 : 6000);
+
+    bubbleEl.innerHTML = '';
+    const textEl = document.createElement('div');
+    textEl.className = 'buddy-bubble-text';
+    textEl.textContent = text;
+    bubbleEl.appendChild(textEl);
+
+    if (actions.length) {
+        const row = document.createElement('div');
+        row.className = 'buddy-bubble-actions';
+        actions.forEach(a => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'buddy-bubble-btn' + (a.variant ? ' ' + a.variant : '');
+            btn.textContent = a.label;
+            btn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                bubbleEl.classList.remove('open');
+                clearTimeout(bubbleTimer);
+                if (a.onClick) a.onClick();
+            });
+            row.appendChild(btn);
+        });
+        bubbleEl.appendChild(row);
+    }
+
     bubbleEl.classList.add('open');
     clearTimeout(bubbleTimer);
     bubbleTimer = setTimeout(() => bubbleEl.classList.remove('open'), duration);

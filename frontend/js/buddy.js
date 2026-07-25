@@ -50,6 +50,7 @@ export async function refreshBuddyState() {
                 state.lastBuddyState = null;
                 renderBuddyStatus();
                 renderBuddyMoodBadge();
+                document.dispatchEvent(new Event('nexus:today-refresh'));
                 return;
             }
             try {
@@ -61,6 +62,7 @@ export async function refreshBuddyState() {
                 state.lastBuddyState = await response.json();
                 renderBuddyStatus();
                 renderBuddyMoodBadge();
+                document.dispatchEvent(new Event('nexus:today-refresh'));
             } catch (e) {
                 console.error('Failed to load buddy state', e);
             }
